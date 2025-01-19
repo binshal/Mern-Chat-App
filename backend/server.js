@@ -1,3 +1,4 @@
+import Path from "path"
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
@@ -12,6 +13,8 @@ import { app, server } from "./socket/socket.js";
 
 const PORT = process.env.PORT || 5000;
 
+const __dirname = Path.resolve();
+
 dotenv.config()
 
   // to parse the incoming request with JSON Payloads
@@ -22,11 +25,10 @@ app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/users", userRoutes);
 
-
-// app.get("/",(req,res)=> {
-//     res.send("hello world")
-// })
-
+app.use(express.static(Path.join(__dirname, "/frontend/dist")))
+app.get("*", (req,res) => {
+  res.sendFile(Path.join(__dirname,"frontend","dist","index.html"))
+})
 
 
 server.listen(PORT, () => {
